@@ -1,0 +1,26 @@
+{
+  "fs_hz": 19607.84314305105,
+  "duration_s": 11.97213800000003,
+  "reference_events": 82,
+  "detector_events_total": 106,
+  "detector_accepted": 89,
+  "flagged_artifact": 17,
+  "threshold_uv": -31.15438419586713,
+  "noise_sigma_uv": 6.923196487970474,
+  "noise_sigma_per_2s_window_uv": [
+    7.5,
+    7.41,
+    7.32,
+    7.31,
+    7.2,
+    4.92
+  ],
+  "reference_offset_samples": {
+    "10.0": 15,
+    "11.0": 64
+  },
+  "reference_offset_ms": 0.5609999998341664,
+  "shared": 79,
+  "detector_only": 10,
+  "reference_only": 3
+}

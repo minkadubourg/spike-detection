@@ -1,0 +1,8 @@
+setting,snr_db,detected,shared,detector_only,reference_only
+order 2,14.37,90,79,11,3
+order 4,14.24,89,79,10,3
+order 6,14.15,90,79,11,3
+low cut 150,12.37,89,79,10,3
+low cut 500,15.15,90,79,11,3
+high cut 2000,14.29,90,79,11,3
+high cut 5000,13.90,91,80,11,2
