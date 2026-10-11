@@ -1,0 +1,149 @@
+{
+  "02_lfp": {
+    "line_noise_attenuation_db": {
+      "60 Hz": 61.2,
+      "120 Hz": 62.6
+    },
+    "artifact_detection": {
+      "precision": 0.757,
+      "recall": 1.0,
+      "f1": 0.862
+    },
+    "gamma_bursts": {
+      "precision": 0.823,
+      "recall": 0.694,
+      "f1": 0.753
+    },
+    "pac_modulation_index_in_bursts": 0.0176,
+    "pac_modulation_index_whole_recording": 0.0067,
+    "pac_surrogate_p": 0.004975124378109453,
+    "preferred_theta_phase_deg": -50.0
+  },
+  "03_spike_trains": {
+    "rate_hz": {
+      "A": 4.93,
+      "B": 3.05
+    },
+    "unit_B_fraction_isi_below_10ms": 0.434,
+    "refractory_violations_unit_B": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "psth_unit_A_hz": {
+      "baseline": 4.7,
+      "evoked_0_200ms": 18.3
+    },
+    "synchrony_pairs_within_2ms": 12,
+    "synchrony_jitter_mean": 4.1,
+    "synchrony_jitter_p": 0.004975124378109453
+  },
+  "04_snippets": {
+    "artifact_rejection": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "silhouette_best_k": 2,
+    "ari_best_k": 0.222,
+    "ari_k3": 0.125,
+    "ari_k3_by_half": {
+      "first half": 0.172,
+      "second half": 0.072
+    }
+  },
+  "05_binned_counts": {
+    "dead": [
+      "ch4"
+    ],
+    "overdispersed": [
+      "ch1"
+    ],
+    "fano": {
+      "ch0": 1.07,
+      "ch1": 2.74,
+      "ch2": 0.99,
+      "ch3": 1.23,
+      "ch5": 1.0
+    },
+    "ch5_nan_gaps": 1,
+    "ch5_nan_seconds": 2.0,
+    "ch3_rate_hz": {
+      "first_half": 5.8,
+      "second_half": 20.1
+    },
+    "ch1_fano_50ms_vs_200ms": [
+      2.74,
+      2.75
+    ]
+  },
+  "06_decoding": {
+    "best_lead_ms": 80.0,
+    "lag_sweep_cv_r2": {
+      "0": 0.209,
+      "20": 0.217,
+      "40": 0.229,
+      "60": 0.24,
+      "80": 0.245,
+      "100": 0.242,
+      "120": 0.226,
+      "140": 0.213,
+      "160": 0.195,
+      "180": 0.187,
+      "200": 0.174
+    },
+    "blocked_cv": {
+      "r2": 0.245,
+      "r2_mean_baseline": -0.271
+    },
+    "direction_range_deg_5_95": {
+      "block 1": [
+        -18.0,
+        42.0
+      ],
+      "block 2": [
+        33.0,
+        72.0
+      ]
+    },
+    "block 2 (train on block 1)": {
+      "r2": -1.481,
+      "r2_mean_baseline": -4.052,
+      "speed_true": 73.0,
+      "speed_pred": 65.9
+    },
+    "rest": {
+      "r2": -52.679,
+      "r2_mean_baseline": -78.022,
+      "speed_true": 6.3,
+      "speed_pred": 51.2
+    },
+    "out of distribution": {
+      "r2": 0.146,
+      "r2_mean_baseline": -0.063,
+      "speed_true": 250.0,
+      "speed_pred": 87.5
+    }
+  },
+  "07_multichannel": {
+    "channels_correct": 8,
+    "channels": 8,
+    "metadata_correct": 5,
+    "metadata_disagreements": [
+      4,
+      5,
+      7
+    ],
+    "crosstalk": {
+      "7": {
+        "source": 6,
+        "shape_r": 0.98,
+        "gain": 0.31
+      }
+    },
+    "low_freq_interchannel_corr": {
+      "before": 0.974,
+      "after_median_ref": -0.108
+    }
+  }
+}

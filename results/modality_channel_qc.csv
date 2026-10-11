@@ -1,0 +1,9 @@
+channel_id,metadata,data_driven,truth,noise_uv,noise_ratio_2nd_1st_half
+0,healthy,healthy,healthy,2.9,1.02
+1,healthy,healthy,healthy,3.0,1.0
+2,healthy,healthy,healthy,3.0,0.99
+3,dead,dead,dead,0.5,1.03
+4,healthy,noisy,noisy,19.9,0.97
+5,healthy,degrading,degrading,5.9,5.76
+6,healthy,healthy,healthy,3.0,1.0
+7,healthy,healthy_with_crosstalk,healthy_with_crosstalk,3.0,1.01
