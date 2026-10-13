@@ -2,6 +2,12 @@
 
 *Minka Dubourg, August 2026*
 
+**In short**
+- **A threshold spike detector that flags events instead of dropping them:** artifacts, duplicates, dropped samples and clipping are marked, so every rejection can be audited.
+- **Tested against ground truth:** 18 synthetic recordings, each isolating one failure mode, scored one-to-one within ±1 ms. Offline: 287 true positives, 5 false positives, 11 misses. 97 tests run in CI.
+- **A real-time version that reproduces the offline causal detector exactly**, with 28 ms latency. It shows what real time costs: a causal band-pass drops the spike trough from 5.5 σ to 2.9 σ, and low-SNR recall from 0.80 to 0.16.
+- **Checked on a real intracortical recording** against a reference detector: 79 shared events, and every disagreement inspected on the raw signal.
+
 Threshold-based spike detection looks simple: band-pass the signal, estimate the noise, mark where the signal crosses k times the noise, align each crossing to its trough. Most of the difficulty lies in what real recordings add on top: drift, mains hum, artifacts, saturation, dropped samples, bursts, colliding waveforms, sampling-rate changes and streaming input. Another difficulty is that "ground truth" is often only another detector's output.
 
 This project builds a detector around those problems. It has five parts:
@@ -91,8 +97,8 @@ Each dataset carries ground truth for several problems at once. All detection is
 
 | data | analysis | result |
 |---|---|---|
-| LFP, 1 kHz | notch 60/120 Hz; variance-based artifact detection; gamma bursts by hysteresis on the Hilbert envelope; phase-amplitude coupling (Tort MI) | hum −61 dB; artifacts recall 1.0, precision 0.76; bursts F1 0.75; coupling significant within bursts (MI 0.018, p = 0.005 against shifted surrogates) but 2.6 × weaker over the whole recording |
-| spike trains | ISI, refractory violations, PSTH, cross-correlogram with jitter surrogates | 4 / 4 injected violations, no false flag; evoked rate 4.7 → 18.3 Hz; 12 synchronous pairs within 2 ms against 4.1 expected (p = 0.005) |
+| LFP, 1 kHz | notch 60/120 Hz; variance-based artifact detection; gamma bursts by hysteresis on the Hilbert envelope; phase-amplitude coupling (Tort MI) | hum −61 dB; artifacts recall 1.0, precision 0.76; bursts F1 0.75; coupling significant within bursts (MI 0.018, p ≤ 0.005 against 200 shifted surrogates) but 2.6 × weaker over the whole recording |
+| spike trains | ISI, refractory violations, PSTH, cross-correlogram with jitter surrogates | 4 / 4 injected violations, no false flag; evoked rate 4.7 → 18.3 Hz; 12 synchronous pairs within 2 ms against 4.1 expected (p ≤ 0.005, 200 jitter surrogates) |
 | waveform snippets | shape-based artifact rejection, PCA + k-means | 10 / 10 artifacts rejected without labels; the rare unit is separated, while the drifting unit merges with the unit whose amplitude it drifts into (ARI 0.22) |
 | binned counts | Fano factor, dead/NaN channels, non-stationarity | dead and overdispersed channels found (Fano 2.74, unchanged at 200 ms bins); 2 s NaN gap excluded rather than counted as zeros; rate ramp 5.8 → 20.1 Hz |
 | neural + behaviour | ridge decoder, lag sweep, blocked cross-validation | held-out R² 0.25 against −0.27 for the mean; lag optimum 80–100 ms (true 100); see the note below the table |
