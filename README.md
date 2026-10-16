@@ -5,7 +5,7 @@
 **In short**
 - **A threshold spike detector that flags events instead of dropping them:** artifacts, duplicates, dropped samples and clipping are marked, so every rejection can be audited.
 - **Tested against ground truth:** 18 synthetic recordings, each isolating one failure mode, scored one-to-one within ±1 ms. Offline: 287 true positives, 5 false positives, 11 misses. 97 tests run in CI.
-- **A real-time version that reproduces the offline causal detector exactly**, with 28 ms latency. It shows what real time costs: a causal band-pass drops the spike trough from 5.5 σ to 2.9 σ, and low-SNR recall from 0.80 to 0.16.
+- **A real-time version that reproduces the offline causal detector exactly**, with 30 ms latency. It shows what real time costs: on the low-SNR scenario, the causal filter drops the spike trough from 5.5 σ to 2.9 σ of the filtered noise, and recall from 0.80 to 0.16.
 - **Checked on a real intracortical recording** against a reference detector: 79 shared events, and every disagreement inspected on the raw signal.
 
 Threshold-based spike detection looks simple: band-pass the signal, estimate the noise, mark where the signal crosses k times the noise, align each crossing to its trough. Most of the difficulty lies in what real recordings add on top: drift, mains hum, artifacts, saturation, dropped samples, bursts, colliding waveforms, sampling-rate changes and streaming input. Another difficulty is that "ground truth" is often only another detector's output.
@@ -15,7 +15,7 @@ This project builds a detector around those problems. It has five parts:
 - **A benchmark** of 18 synthetic recordings, each isolating one failure mode, run by the tests.
 - **A streaming version** that reproduces the offline causal detector sample for sample.
 - **An audit of a reference detector** on a real intracortical recording.
-- **Analyses of six other kinds of electrophysiology data**, each scored against ground truth: LFP, spike trains, waveform snippets, binned counts, neural-behavioural decoding and multichannel quality control.
+- **Exploratory analyses of six other kinds of electrophysiology data**, each scored against ground truth: LFP, spike trains, waveform snippets, binned counts, neural-behavioural decoding and multichannel quality control.
 
 <p align="center"><img src="figures/scenarios.png" width="900" alt="The benchmark scenarios with ground truth and detected events"></p>
 
@@ -69,13 +69,15 @@ Each scenario is rebuilt from a fixed seed. Accepted events are scored against g
 
 Full per-scenario results, including the flag checks, are in [`results/benchmark.csv`](results/benchmark.csv). Notes on individual rows:
 - **06 overlaps:** the 6 misses are collisions less than 0.8 ms apart. A threshold detector sees one merged event there; separating them needs template matching.
-- **02 low SNR:** the 5 offline misses are expected at a peak SNR of 2.7 with k = 4.5.
+- **02 low SNR:** the spikes peak at 2.7 × the broadband noise σ, or about 5.5 × the noise σ after the band-pass, so with k = 4.5 the 5 offline misses are expected.
 
 ### 3. Streaming detector
 
-The streaming detector keeps the filter state between chunks and emits an event only once enough signal has arrived after it. Every flag depends on a bounded neighbourhood of its event, and the detector waits for that neighbourhood to be complete. As a result, its output is identical to the offline detector in causal mode: for chunks of 1, 37, 1000 or 4096 samples, and on artifacts, bursts, NaN gaps and truncated edge spikes. The tests check this field by field. Latency is 28 ms and memory is bounded.
+The streaming detector keeps the filter state between chunks and emits an event only once enough signal has arrived after it. Every flag depends on a bounded neighbourhood of its event, and the detector waits for that neighbourhood to be complete. As a result, its output is identical to the offline detector in causal mode: for chunks of 1, 37, 1000 or 4096 samples, and on artifacts, bursts, NaN gaps and truncated edge spikes. The tests check this field by field. Latency is 30 ms with the default settings (most of it from the 25 ms context of the slow-excursion artifact test) and memory is bounded.
 
-The cost is sensitivity. A causal band-pass moves the spike's energy into its positive overshoot. On the benchmark waveform, the trough falls from 5.5 σ to 2.9 σ of the filtered noise, while the overshoot reaches 4.4 σ. At low SNR, recall drops from 0.80 offline to 0.16. A real-time detector should therefore threshold the overshoot or use a matched filter (see next steps).
+Throughput has a cost too. Each chunk re-runs detection over the buffered context, so on one CPU core the detector runs about 5 × faster than real time with 10 ms chunks and 16 × with 33 ms chunks, for a single channel. That is enough for a few channels, not for a large array; processing only the new samples is a next step.
+
+The main cost is sensitivity. A causal filter has a nonlinear phase response, which reshapes the waveform: the trough shrinks and the positive overshoot grows. (The offline filter also differs in magnitude: `sosfiltfilt` runs the filter forward and backward, which squares its magnitude response and doubles its order. The comparison is between the two detectors as configured, not between phase responses alone.) On the low-SNR scenario, the trough falls from 5.5 σ to 2.9 σ of the filtered noise, while the overshoot reaches 4.4 σ. At low SNR, recall drops from 0.80 offline to 0.16. A real-time detector should therefore threshold the overshoot or use a matched filter (see next steps).
 
 ### 4. What the benchmark exposed
 
@@ -91,7 +93,9 @@ The cost is sensitivity. A causal band-pass moves the spike's energy into its po
 
   Both are fixed and covered by regression tests.
 
-### 5. Other kinds of electrophysiology data
+### 5. Exploratory: other kinds of electrophysiology data
+
+These analyses are exploratory. They live outside the `spikedet` package, are not covered by the tests, and their data generators were written with an AI assistant (see Credits).
 
 Each dataset carries ground truth for several problems at once. All detection is data-driven: labels are read only for scoring. The full numbers are in [`results/modalities.json`](results/modalities.json).
 
@@ -198,6 +202,7 @@ tests/  results/  figures/
 - **The causal detector is insensitive at low SNR.** Thresholding the positive overshoot, or a matched filter on the causally filtered waveform, should recover most of the loss.
 - **No spatial detection.** Multichannel detection is per channel, apart from shared-artifact rejection. Spatial detection and sorting across neighbouring electrodes are not implemented.
 - **No file formats or scale.** Reading standard formats such as NWB, and chunked storage for long multichannel recordings, are not implemented yet. The streaming detector already gives a constant-memory path for them.
+- **Streaming throughput.** Each chunk re-runs detection over the buffered context (about 5 × real time per channel with 10 ms chunks). Processing only the new samples would make multichannel real-time use practical.
 - **No automatic rail detection when streaming.** Clipping is flagged in streaming mode only when the amplifier rail is configured; offline, it is detected from the data.
 
 ## Credits

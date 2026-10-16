@@ -80,7 +80,7 @@ def clean():
 
 
 def low_snr():
-    return _simple("02_low_snr", "40 µV spikes in 15 µV noise (peak SNR 2.7)", 30000, 1.5, 15.0, 40.0, 25, 0.015, 2)
+    return _simple("02_low_snr", "40 µV spikes in 15 µV noise (peak 2.7 × broadband noise σ)", 30000, 1.5, 15.0, 40.0, 25, 0.015, 2)
 
 
 def drift():
