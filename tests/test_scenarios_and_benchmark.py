@@ -8,7 +8,7 @@ from spikedet.benchmark import PROFILES, all_scenarios, run_scenario
 
 # (min recall, max false positives) for the default offline profile
 OFFLINE = {
-    "01_clean": (1.0, 0), "02_low_snr": (0.75, 1),   # peak SNR 2.7: misses are expected at k = 4.5
+    "01_clean": (1.0, 0), "02_low_snr": (0.75, 1),   # peak 2.7 × broadband noise σ: misses are expected at k = 4.5
     "03_drift": (1.0, 1), "04_mixed_amplitudes": (1.0, 1), "05_bursts": (1.0, 0),
     "06_overlaps": (0.7, 1),                          # limitation: collisions need template matching
     "07_artifacts": (1.0, 1), "08_line_noise": (1.0, 0), "09_multichannel": (1.0, 0),

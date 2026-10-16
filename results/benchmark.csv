@@ -1,6 +1,6 @@
 profile,scenario,description,truth,detected_events,tp,fp,fn,precision,recall,median_offset_samples,artifacts_flagged,artifacts_total,straddling_spike_found,edge_flagged,clipped_flagged
 offline (zero-phase),01_clean,12 isolated 80 µV spikes in 3 µV noise,12,13,12,0,0,1.000,1.000,0.000,,,,,
-offline (zero-phase),02_low_snr,40 µV spikes in 15 µV noise (peak SNR 2.7),25,20,20,0,5,1.000,0.800,0.000,,,,,
+offline (zero-phase),02_low_snr,40 µV spikes in 15 µV noise (peak 2.7 × broadband noise σ),25,20,20,0,5,1.000,0.800,0.000,,,,,
 offline (zero-phase),03_drift,slow random-walk baseline wander under 70 µV spikes,20,21,20,1,0,0.952,1.000,0.000,,,,,
 offline (zero-phase),04_mixed_amplitudes,"three units of 25, 70 and 160 µV on one channel",30,31,30,1,0,0.968,1.000,0.000,,,,,
 offline (zero-phase),05_bursts,isolated spikes and 4-spike bursts (3-6 ms intervals),26,26,26,0,0,1.000,1.000,0.000,,,,,
@@ -18,7 +18,7 @@ offline (zero-phase),12_edge_end,spike truncated by the end of the recording,1,2
 offline (zero-phase),12_nans,"6 spikes, 50 dropped (NaN) samples",6,6,6,0,0,1.000,1.000,0.000,,,,,
 offline (zero-phase),12_clipped,200 µV spikes clipped at ±120 µV,6,7,6,0,0,1.000,1.000,0.000,,,,,6.000
 streaming (causal),01_clean,12 isolated 80 µV spikes in 3 µV noise,12,24,12,0,0,1.000,1.000,3.000,,,,,
-streaming (causal),02_low_snr,40 µV spikes in 15 µV noise (peak SNR 2.7),25,5,4,1,21,0.800,0.160,3.000,,,,,
+streaming (causal),02_low_snr,40 µV spikes in 15 µV noise (peak 2.7 × broadband noise σ),25,5,4,1,21,0.800,0.160,3.000,,,,,
 streaming (causal),03_drift,slow random-walk baseline wander under 70 µV spikes,20,42,20,0,0,1.000,1.000,3.000,,,,,
 streaming (causal),04_mixed_amplitudes,"three units of 25, 70 and 160 µV on one channel",30,51,27,0,3,1.000,0.900,3.000,,,,,
 streaming (causal),05_bursts,isolated spikes and 4-spike bursts (3-6 ms intervals),26,52,26,0,0,1.000,1.000,3.000,,,,,
